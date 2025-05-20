@@ -1,4 +1,4 @@
-<main id="store-section" class="main-section">
+<main id="store-section" class="main-section" style="display: none;">
     <div class="head-title">
             <div class="left">
                 <h1>My Store</h1>

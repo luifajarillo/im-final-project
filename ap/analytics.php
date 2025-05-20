@@ -1,4 +1,4 @@
-<main id="analytics-section" class="main-section">
+<main id="analytics-section" class="main-section" style="display: none;">
     <div class="head-title">
             <div class="left">
                 <h1>Analytics</h1>

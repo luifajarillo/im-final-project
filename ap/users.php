@@ -1,4 +1,4 @@
-<main id="users-section" class="main-section">
+<main id="users-section" class="main-section" style="display: none;">
     <div class="head-title">
             <div class="left">
                 <h1>Users</h1>
