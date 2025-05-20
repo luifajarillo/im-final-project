@@ -74,3 +74,23 @@ switchMode.addEventListener('change', function () {
 		document.body.classList.remove('dark');
 	}
 })
+
+
+// sidebar functions //
+document.querySelectorAll('#sidebar .side-menu a').forEach(link => {
+link.addEventListener('click', function (e) {
+	e.preventDefault();
+
+	// Remove 'active' from all links
+	document.querySelectorAll('#sidebar .side-menu li').forEach(li => li.classList.remove('active'));
+	this.parentElement.classList.add('active');
+
+	// Hide all main sections
+	document.querySelectorAll('.main-section').forEach(section => section.style.display = 'none');
+
+	// Show the one we clicked
+	const targetId = this.getAttribute('data-section');
+	const target = document.getElementById(targetId);
+	if (target) target.style.display = 'block';
+});
+});
