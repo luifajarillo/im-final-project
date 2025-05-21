@@ -7,6 +7,10 @@ function openModal(title, image, description, price) {
     document.getElementById('modalPrice').innerText = price;
     document.getElementById('qtyValue').innerText = qty = 1;
     document.getElementById('itemModal').style.display = 'flex';
+
+     // Reset all addon checkboxes
+    const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
 }
 
 function closeModal() {
@@ -27,7 +31,7 @@ if (cartBtn) {
 }
 
 function showCart() {
-    cartModal.style.display = "flex"; // Or use block if you prefer
+    cartModal.style.display = "flex";
 }
 
 function closeCart() {
@@ -89,7 +93,6 @@ function addToCart() {
             <div style="flex: 1;">
                 <div><strong>${name}</strong></div>
                 ${addonNames.length ? `<div style="font-size: 0.9em; color: #555;">Add-ons: ${addonNames.join(', ')}</div>` : ''}
-                <div style="font-size: 0.9em; color: #555;">₱${price} x ${quantity}${addonTotal ? ` + ₱${addonTotal}` : ''}</div>
             </div>
             <button onclick="this.parentElement.parentElement.remove(); updateCartTotal()" style="background: none; border: none; color: red; cursor: pointer;">✖</button>
         </div>
@@ -125,7 +128,8 @@ function updateCartTotal() {
     });
 
     const vat = subtotal * 0.12;
-    const total = subtotal + vat;
+    const shipping = 50;
+    const total = subtotal + vat + shipping;
 
     document.getElementById('cartSubtotal').innerText = `₱${subtotal.toFixed(2)}`;
     document.getElementById('cartVAT').innerText = `₱${vat.toFixed(2)}`;
