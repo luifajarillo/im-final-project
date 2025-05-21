@@ -89,7 +89,7 @@ main {
 /* ABOUT US ====================== */
 .about-section {
     position: relative;
-    background-image: url('../media/about-us.jpg'); /* Replace with your actual background */
+    background-image: url('../media/about-us.jpg');
     background-size: cover;
     background-position: center;
     height: 90vh;
