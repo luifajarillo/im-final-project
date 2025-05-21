@@ -1,9 +1,9 @@
 <link rel="stylesheet" href="css/header.css">
 
-<header>
+<header style="padding: 15px 0;">
     <div class="header-div" style="padding-left: 3em;">
-        <a href="index.php" style="text-decoration: none; color: inherit;">
-            <h1>JLougawan</h1>
+        <a href="index.php">
+            <img src="media/logo.png" alt="JLougawan Logo" style="height: 55px;">
         </a>
     </div>
 

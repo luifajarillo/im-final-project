@@ -32,6 +32,7 @@
             <div class="card-container">
                 <!-- BEST SELLERS CARD -->
                 <div class="food-card">
+                    <span class="best-badge">Top Pick</span>
                     <img src="media/menu/lugaw-egg.jpg" alt="Lugaw with Egg" />
                     <h3 class="card-title">Lugaw w/ Egg</h3>
                     <div class="card-overlay">
@@ -78,7 +79,7 @@
         <section id="how-to-order" class="home-s">
             <h2>How to Order</h2>
             
-            <div class="card-container">
+            <div class="card-container" style="margin-top: 40px;">
                 <div class="steps-card">
                     <div class="icon-circle">
                         <img src="media/icons/shopping-cart.png" alt="Cart Icon" style="width: 26px; height: 26px;"/>
