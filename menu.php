@@ -1,9 +1,55 @@
+<?php
+include 'mysqli_connect.php';
+
+$category = $_GET['category'] ?? 'base_foods'; //sets base foods as default page if hindi addons or bevs ang linked
+
+function renderCards($result, $category) {
+    while ($row = $result->fetch_assoc()) {
+        // Dynamically determine the ID field based on category
+        if ($category === 'addons') {
+            $id = $row['addon_id'];
+        } elseif ($category === 'beverages') {
+            $id = $row['beverage_id'];
+        } else {
+            $id = $row['basefood_id'];
+        }
+
+        echo '<div class="card" onclick="openModal(' .
+            htmlspecialchars(json_encode($row['name'])) . ',' .
+            htmlspecialchars(json_encode($row['image_url'])) . ',' .
+            htmlspecialchars(json_encode($row['description'] ?? '')) . ',' .
+            htmlspecialchars(json_encode($row['price'])) . ',' .
+            htmlspecialchars(json_encode($category)) . ',' .
+            htmlspecialchars(json_encode($id)) .
+        ')">';
+
+        echo '<img src="' . htmlspecialchars($row['image_url']) . '" alt="' . htmlspecialchars($row['name']) . '">';
+        echo '<div class="card-content">';
+        echo '<div class="card-title">' . htmlspecialchars($row['name']) . '</div>';
+        echo '<div class="card-price">₱' . $row['price'] . '</div>';
+        echo '</div></div>';
+    }
+}
+
+switch ($category) {
+    case 'addons':
+        $query = "SELECT a.addon_id, a.name, a.price, a.image_url FROM addons a JOIN (SELECT MIN(addon_id) AS min_id FROM addons WHERE price != 0.00 GROUP BY name) AS b ON a.addon_id = b.min_id;"; // display lang yung mga items by itself
+        break;
+    case 'beverages':
+        $query = "SELECT * FROM beverages WHERE is_available = 1";
+        break;
+    default:
+        $query = "SELECT * FROM base_foods WHERE is_available = 1";
+        break;
+}
+
+$result = $dbcon->query($query);
+?>
+
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>JLougawan - Menu</title>
         <link rel="stylesheet" href="css/menu.css">
         <link rel="stylesheet" href="css/header.css">
@@ -12,26 +58,16 @@
         <?php include 'header.php'; ?>
         <main>
             <h1>Menu</h1>
-        
-            <div class="menu-container">
-                
-                <div class="card" onclick="openModal('Lugaw w/ Egg', 'media/menu/lugaw-egg.jpg', 'Warm rice porridge with a soft-boiled egg.', 35)">
-                    <img src="media/menu/lugaw-egg.jpg" alt="Lugaw w/ Egg" />
-                    <div class="card-content">
-                        <div class="card-title">Lugaw w/ Egg</div>
-                        <div class="card-price">₱35</div>
-                    </div>
-                </div>
 
-                <div class="card" onclick="openModal('Pares', 'media/menu/beef-pares.jpg', 'Flavorful beef stew served with rice.', 50)">
-                    <img src="media/menu/beef-pares.jpg" alt="Beef Pares"/>
-                    <div class="card-content">
-                        <div class="card-title">Pares</div>
-                        <div class="card-price">₱50</div>
-                    </div>
-                </div>
+            <!-- Category Filter -->
+            <nav class="menu-nav">
+                <button onclick="location.href='menu.php?category=base_foods'">Base Foods</button>
+                <button onclick="location.href='menu.php?category=addons'">Add-ons</button>
+                <button onclick="location.href='menu.php?category=beverages'">Beverages</button>
+            </nav>
 
-                <!-- Add more cards here -->
+            <div class="menu-container" id="menuContainer">
+                <?php renderCards($result, $category); ?>
             </div>
 
             <!-- Modal -->
@@ -56,26 +92,8 @@
 
                         <hr style="border: none; height: 2px; background-color: #ccc; margin: 20px 0;">
                         <p>Add Ons:</p>
-
                         <div id="checklist" class="addons">
-                            <input type="checkbox" id="01" name="addons[]" value="Spring Onions (Free)">
-                            <label for="01">Add Spring Onions (Free)</label>
-
-                            <input type="checkbox" id="02" name="addons[]" value="Chili Garlic (Free)">
-                            <label for="02">Add Chili Garlic (Free)</label>
-
-                            <input type="checkbox" id="03" name="addons[]" value="Garlic chips (₱5)">
-                            <label for="03">Add garlic chips (₱5)</label>
-
-                            <input type="checkbox" id="04" name="addons[]" value="Extra egg (₱17)">
-                            <label for="04">Add extra egg (₱17)</label>
-
-                            <input type="checkbox" id="05" name="addons[]" value="Tokwa't Baboy (₱35)">
-                            <label for="05">Add Tokwa't Baboy (₱35)</label>
-
                         </div>
-
-
                     </div>
                     
                     <div class="modal-footer">

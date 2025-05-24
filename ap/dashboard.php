@@ -1,3 +1,5 @@
+<?php include("mysqli_connect.php"); ?>
+
 <main id="dashboard-section" class="main-section">
     <div class="head-title">
         <div class="left">

@@ -94,3 +94,26 @@ link.addEventListener('click', function (e) {
 	if (target) target.style.display = 'block';
 });
 });
+
+// try lang 
+document.addEventListener("DOMContentLoaded", function () {
+    const links = document.querySelectorAll("a[data-section]");
+    const sections = document.querySelectorAll(".main-section");
+
+    links.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute("data-section");
+
+            // Hide all sections
+            sections.forEach(sec => sec.style.display = "none");
+
+            // Show the target section
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.style.display = "block";
+            }
+        });
+    });
+});

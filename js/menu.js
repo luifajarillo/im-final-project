@@ -1,17 +1,73 @@
 let qty = 1;
+let currentItem = { category: '', id: '' };
 
-function openModal(title, image, description, price) {
+function openModal(title, image, description, price, category, id) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalImage').src = image;
-    document.getElementById('modalDesc').innerText = description;
+    document.getElementById('modalDesc').innerText = description || '';
     document.getElementById('modalPrice').innerText = price;
-    document.getElementById('qtyValue').innerText = qty = 1;
-    document.getElementById('itemModal').style.display = 'flex';
+    document.getElementById('qtyValue').innerText = 1;
 
-     // Reset all addon checkboxes
-    const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
-    checkboxes.forEach(checkbox => checkbox.checked = false);
+    const checklist = document.getElementById('checklist');
+    checklist.innerHTML = '<p>Loading add-ons...</p>';
+
+    fetch(`fetch_addons.php?category=${encodeURIComponent(category)}&id=${encodeURIComponent(id)}`)
+        .then(res => res.json())
+        .then(data => {
+            checklist.innerHTML = '';
+            if (!data.length) {
+                checklist.innerHTML = '<p>No add-ons available.</p>';
+                return;
+            }
+            data.forEach((addon, index) => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'addon' + index;
+                checkbox.name = 'addons[]';
+                checkbox.value = addon.name + (addon.price > 0 ? ` (₱${addon.price})` : ' (Free)');
+                checkbox.dataset.price = addon.price;
+
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.textContent = `Add ${addon.name}` + (addon.price > 0 ? ` (₱${addon.price})` : ' (Free)');
+
+                const div = document.createElement('div');   
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                checklist.appendChild(div);
+            });
+        })
+        .catch(() => {
+            checklist.innerHTML = '<p>Failed to load add-ons.</p>';
+        });
+
+    document.getElementById('itemModal').style.display = 'flex';
 }
+
+function fetchAddons(category, id) {
+    const checklist = document.getElementById('checklist');
+    checklist.innerHTML = ''; // ✅ Fix: Clear previous add-ons
+
+    checklist.innerHTML = '<p style="color: #888;">Loading add-ons...</p>';
+
+    fetch(`get_addons.php?category=${category}&id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.length) {
+                checklist.innerHTML = '<p style="color: #888;">No available add-ons.</p>';
+                return;
+            }
+            checklist.innerHTML = data.map(addon => `
+                <div>
+                    <input type="checkbox" id="${addon.addon_id}" data-price="${addon.price}" />
+                    <label for="${addon.addon_id}">Add ${addon.name} (+₱${addon.price})</label>
+                </div>`).join('');
+        })
+        .catch(() => {
+            checklist.innerHTML = '<p style="color: red;">Failed to load add-ons.</p>';
+        });
+}
+
 
 function closeModal() {
     document.getElementById('itemModal').style.display = 'none';
@@ -22,7 +78,6 @@ function changeQty(amount) {
     document.getElementById('qtyValue').innerText = qty;
 }
 
-// CART MODAL
 const cartBtn = document.getElementById("cartBtn");
 const cartModal = document.getElementById("cartModal");
 
@@ -35,18 +90,15 @@ function showCart() {
 }
 
 function closeCart() {
-    console.log("closeCart called");
     cartModal.style.display = "none";
 }
 
-// Click outside modal to close
 window.addEventListener("click", (e) => {
     if (e.target === cartModal) {
         closeCart();
     }
 });
 
-// One working listener
 const closeCartBtn = cartModal.querySelector(".close");
 if (closeCartBtn) {
     closeCartBtn.addEventListener("click", closeCart);
@@ -64,24 +116,15 @@ function addToCart() {
     const quantity = parseInt(document.getElementById('qtyValue').innerText);
     const image = document.getElementById('modalImage').src;
 
-    const selectedAddons = Array.from(document.querySelectorAll('.addons input:checked'));
+    const selectedAddons = Array.from(document.querySelectorAll('#checklist input:checked'));
     const addonNames = selectedAddons.map(a => {
         const label = document.querySelector(`label[for="${a.id}"]`);
         const raw = label ? label.textContent.trim() : '';
         return raw.replace(/^Add\s+/i, '').trim();
     });
 
-    const addonPrices = {
-        "01": 0,   // Spring Onions
-        "02": 0,   // Chili Garlic
-        "03": 5,   // Garlic Chips
-        "04": 17,  // Extra Egg
-        "05": 35   // Tokwa't Baboy
-    }; 
-
-
     const addonTotal = selectedAddons.reduce((sum, addon) => {
-        return sum + (addonPrices[addon.id] || 0);
+        return sum + (parseFloat(addon.dataset.price) || 0);
     }, 0);
 
     const item = document.createElement('div');
