@@ -1,5 +1,22 @@
 <?php include("mysqli_connect.php"); ?>
 
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.modal.show {
+    display: flex;
+}
+</style>
+
 <main id="store-section" class="main-section" style="display: none;">
     <div class="head-title">
         <div class="left">
@@ -31,7 +48,7 @@
                     <td><?= $row['is_available'] ? 'Yes' : 'No' ?></td>
                     <td>
                         <a href="edit_product_form.php?id=<?= $row['basefood_id'] ?>">Edit</a> |
-                        <a href="actions/delete_product.php?id=<?= $row['basefood_id'] ?>" onclick="return confirm('Delete?')">Delete</a>
+                        <a href="#" onclick="event.preventDefault(); openDeleteModal('<?= $row['basefood_id'] ?>', 'base_foods')">Delete</a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -61,7 +78,7 @@
                     <td><?= $row['is_available'] ? 'Yes' : 'No' ?></td>
                     <td>
                         <a href="edit_product_form.php?id=<?= $row['beverage_id'] ?>">Edit</a> |
-                        <a href="actions/delete_product.php?id=<?= $row['beverage_id'] ?>" onclick="return confirm('Delete?')">Delete</a>
+                        <a href="#" onclick="event.preventDefault(); openDeleteModal('<?= $row['beverage_id'] ?>', 'beverages')">Delete</a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -91,7 +108,7 @@
                     <td><?= $row['is_available'] ? 'Yes' : 'No' ?></td>
                     <td>
                         <a href="edit_product_form.php?id=<?= $row['addon_id'] ?>">Edit</a> |
-                        <a href="actions/delete_product.php?id=<?= $row['addon_id'] ?>" onclick="return confirm('Delete?')">Delete</a>
+                        <a href="#" onclick="event.preventDefault(); openDeleteModal('<?= $row['addon_id'] ?>', 'addons')">Delete</a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -101,3 +118,18 @@
     </div>
 
 </main>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div style="background:#fff; padding:20px; text-align:center; min-width: 300px;">
+        <h3>Are you sure you want to delete this item?</h3>
+        <form method="POST" action="actions/delete_product.php">
+            <input type="hidden" name="id" id="deleteId">
+            <input type="hidden" name="table" id="deleteTable">
+            <button type="submit">Yes, Delete</button>
+            <button type="button" onclick="closeDeleteModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script src="/JLougawan/js/admin.js"></script>

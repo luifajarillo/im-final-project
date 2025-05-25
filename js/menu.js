@@ -44,31 +44,6 @@ function openModal(title, image, description, price, category, id) {
     document.getElementById('itemModal').style.display = 'flex';
 }
 
-function fetchAddons(category, id) {
-    const checklist = document.getElementById('checklist');
-    checklist.innerHTML = ''; // ✅ Fix: Clear previous add-ons
-
-    checklist.innerHTML = '<p style="color: #888;">Loading add-ons...</p>';
-
-    fetch(`get_addons.php?category=${category}&id=${id}`)
-        .then(res => res.json())
-        .then(data => {
-            if (!data.length) {
-                checklist.innerHTML = '<p style="color: #888;">No available add-ons.</p>';
-                return;
-            }
-            checklist.innerHTML = data.map(addon => `
-                <div>
-                    <input type="checkbox" id="${addon.addon_id}" data-price="${addon.price}" />
-                    <label for="${addon.addon_id}">Add ${addon.name} (+₱${addon.price})</label>
-                </div>`).join('');
-        })
-        .catch(() => {
-            checklist.innerHTML = '<p style="color: red;">Failed to load add-ons.</p>';
-        });
-}
-
-
 function closeModal() {
     document.getElementById('itemModal').style.display = 'none';
 }

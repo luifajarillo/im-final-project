@@ -38,13 +38,6 @@
 					<span class="text">Manage Users</span>
 				</a>
 			</li>
-			<li>
-				<a href="#" data-section="analytics-section">
-					<i class='bx bxs-doughnut-chart' ></i>
-					<span class="text">Analytics</span>
-				</a>
-			</li>
-			
 			
 		</ul>
 		<ul class="side-menu">
@@ -94,11 +87,24 @@
 	    <?php include("dashboard.php"); ?>
 	    <?php include("store.php"); ?>
 	    <?php include("users.php"); ?>
-	    <?php include("analytics.php"); ?>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
 
+	<!-- delete modal funcs -->
+	<script>
+	function openDeleteModal(id, table) {
+		document.getElementById('deleteId').value = id;
+		document.getElementById('deleteTable').value = table;
+		document.getElementById('deleteModal').classList.add('show');
+	}
+
+	function closeDeleteModal() {
+		document.getElementById('deleteModal').classList.remove('show');
+	}
+	</script>
+
 	<script src="/JLougawan/js/admin.js"></script>
+
 </body>
 </html>
