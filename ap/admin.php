@@ -104,6 +104,17 @@
 	}
 	</script>
 
+	<script>
+	function openDeleteModal2(id) {
+		document.getElementById('deleteId2').value = id;
+		document.getElementById('deleteModal2').classList.add('show');
+	}
+
+	function closeDeleteModal2() {
+		document.getElementById('deleteModal2').classList.remove('show');
+	}
+	</script>
+
 	<script src="/JLougawan/js/admin.js"></script>
 
 </body>
